@@ -227,6 +227,7 @@ canvas { width: 100% !important; display: block; }
 .comp-softmax .comp-fill { background: linear-gradient(90deg,var(--cyan),#00bcd4); }
 .comp-simple .comp-fill { background: linear-gradient(90deg,var(--muted),#4a4e6a); }
 .comp-note { margin-top: 1rem; font-size: 0.68rem; color: var(--muted); line-height: 1.6; padding: 0.6rem 0.8rem; border-left: 2px solid rgba(0,229,255,0.3); }
+.highlight { color: var(--cyan); }
 </style>
 </head>
 <body>
@@ -236,12 +237,12 @@ canvas { width: 100% !important; display: block; }
   <div class="nav-logo" onclick="showPage('home')">P( x )</div>
   <ul class="nav-links">
     <li><a id="nav-home"    onclick="showPage('home')">Home</a></li>
-    <li><a id="nav-slides"  href="slides.html">Slides</a></li>
+    <li><a href="slides.html">Slides</a></li>
     <li><a id="nav-venn"    onclick="showPage('venn')">Venn Diagram</a></li>
     <li><a id="nav-bayes"   onclick="showPage('bayes')">Bayes' Theorem</a></li>
     <li><a id="nav-lln"     onclick="showPage('lln')">Law of Large Numbers</a></li>
     <li><a id="nav-softmax" onclick="showPage('softmax')">Softmax</a></li>
-    <li><a href="mcq.html">MCQ ✦</a></li>
+    <li><a href="mcq.html">MCQ</a></li>
   </ul>
 </nav>
 
@@ -254,15 +255,15 @@ canvas { width: 100% !important; display: block; }
     <div class="orb orb-2"></div>
     <div class="hero-tag">ANN COURSE PROJECT — PROBABILITY CONCEPTS</div>
     <h1>Probability<br><span>Visualized.</span></h1>
-    <p class="hero-sub">A full slide deck and four interactive demos to build an intuitive understanding of core probability concepts that form the mathematical foundation of Artificial Neural Networks.</p>
+    <p class="hero-sub">Four interactive demos and a full presentation deck to build intuitive understanding of core probability concepts — the mathematical foundation of Artificial Neural Networks.</p>
   </section>
   <div class="cards">
-    <a class="home-card" href="slides.html" style="text-decoration:none;color:inherit;">
-      <div class="card-num">SLIDES</div>
-      <div class="card-icon">🗂️</div>
-      <h2>Presentation — 21 Slides</h2>
-      <p>Browse the full slide deck covering all 7 sections — from axioms and distributions to MLE and cross-entropy loss — with thumbnail navigation and keyboard shortcuts.</p>
-      <div class="ann-tag">Covers: Foundations · Rules · Bayes · Distributions · MLE & ANN Applications</div>
+    <a class="home-card" href="slides.html" style="text-decoration:none; color:inherit;">
+      <div class="card-num">PRESENTATION — 21 SLIDES</div>
+      <div class="card-icon">📑</div>
+      <h2>Probability Slides</h2>
+      <p>21 slides across 7 sections — from axioms and distributions to MLE and cross-entropy loss — with a slide browser, thumbnail strip, and fullscreen mode.</p>
+      <div class="ann-tag">Covers: Foundations · Rules · Bayes · Distributions · Expectation · MLE & Cross-Entropy</div>
       <span class="card-arrow">→</span>
     </a>
     <div class="home-card" onclick="showPage('venn')">
