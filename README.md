@@ -5,10 +5,6 @@ visualizations and a full presentation deck.
 
 🔗 Project Live Website: https://kareem5432.github.io/Main-Concepts-of-Probability-Interactive-Demo/
 
-📊 Slides: https://kareem5432.github.io/Main-Concepts-of-Probability-Interactive-Demo/slides.html
-
-📝 MCQ Quiz: https://kareem5432.github.io/Main-Concepts-of-Probability-Interactive-Demo/mcq.html
-
 ## Presentation
 21 slides across 7 sections — from axioms and distributions to MLE and 
 cross-entropy loss. Includes a slide browser, thumbnail strip, and fullscreen mode.
@@ -32,7 +28,7 @@ cross-entropy loss. Includes a slide browser, thumbnail strip, and fullscreen mo
 | 04 | Softmax Function | Logit-to-probability conversion & temperature |
 
 ## How to Use
-**Online:** click any of the links above.  
+**Online:** click the link above.  
 **Offline:** download `index.html`, `slides.html`, `mcq.html`, and 
 `Probability_ANN_Course.pdf` into the same folder, then open 
 `index.html` in any browser — no installation needed.
