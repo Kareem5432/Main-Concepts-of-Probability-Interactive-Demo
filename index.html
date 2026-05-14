@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Probability Concepts — Interactive Learning</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 /* ─── Shared Base ────────────────────────────────────────── */
 :root {
@@ -227,7 +228,32 @@ canvas { width: 100% !important; display: block; }
 .comp-softmax .comp-fill { background: linear-gradient(90deg,var(--cyan),#00bcd4); }
 .comp-simple .comp-fill { background: linear-gradient(90deg,var(--muted),#4a4e6a); }
 .comp-note { margin-top: 1rem; font-size: 0.68rem; color: var(--muted); line-height: 1.6; padding: 0.6rem 0.8rem; border-left: 2px solid rgba(0,229,255,0.3); }
-.highlight { color: var(--cyan); }
+/* ═══ SLIDES PAGE ════════════════════════════════════════ */
+.slides-progress-track { width:100%; height:3px; background:var(--border); border-radius:2px; margin-bottom:1.5rem; overflow:hidden; }
+.slides-progress-fill { height:100%; background:linear-gradient(90deg,var(--cyan),var(--violet)); border-radius:2px; transition:width 0.3s ease; }
+.slides-viewer-wrap { background:var(--card); border:1px solid var(--border); border-radius:4px; overflow:hidden; margin-bottom:0.75rem; }
+.slides-canvas-container { position:relative; width:100%; display:flex; align-items:center; justify-content:center; background:#0a0a14; min-height:200px; }
+#slide-canvas { display:block; width:100%; height:auto; max-height:65vh; object-fit:contain; }
+.slides-loading-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:#0a0a14; flex-direction:column; gap:1rem; }
+.slides-spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--cyan); border-radius:50%; animation:spin 0.8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.slides-loading-text { font-size:0.72rem; color:var(--muted); }
+.slides-nav-bar { display:flex; align-items:center; justify-content:space-between; padding:0.9rem 1.5rem; border-top:1px solid var(--border); background:var(--card); gap:1rem; }
+.slides-btn { padding:0.5rem 1.2rem; border:1px solid var(--border); background:transparent; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:0.73rem; cursor:pointer; border-radius:2px; transition:all 0.2s; letter-spacing:0.04em; }
+.slides-btn:hover:not(:disabled) { border-color:var(--cyan); color:var(--cyan); }
+.slides-btn:disabled { opacity:0.3; cursor:default; }
+.slides-counter { font-size:0.78rem; color:var(--text); text-align:center; flex:1; }
+.slides-counter span { color:var(--cyan); font-weight:600; }
+.slides-section-label { font-size:0.68rem; color:var(--muted); text-align:center; margin-top:0.4rem; min-height:1.2em; }
+.slides-keyboard-hint { text-align:center; font-size:0.63rem; color:var(--muted); opacity:0.45; margin-bottom:1.5rem; }
+.slides-thumb-title { font-size:0.68rem; color:var(--muted); letter-spacing:0.1em; margin-bottom:0.75rem; margin-top:1.5rem; }
+.slides-thumbs { display:flex; gap:0.5rem; overflow-x:auto; padding-bottom:0.5rem; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+.slides-thumb { flex-shrink:0; width:100px; cursor:pointer; border:2px solid var(--border); border-radius:3px; overflow:hidden; transition:border-color 0.2s,transform 0.2s; background:#0a0a14; }
+.slides-thumb:hover { border-color:rgba(0,229,255,0.4); transform:translateY(-2px); }
+.slides-thumb.active { border-color:var(--cyan); }
+.slides-thumb canvas { width:100%; height:auto; display:block; }
+.slides-thumb-num { text-align:center; font-size:0.55rem; color:var(--muted); padding:2px 0 3px; background:var(--card); }
+.slides-thumb.active .slides-thumb-num { color:var(--cyan); }
 </style>
 </head>
 <body>
@@ -237,6 +263,7 @@ canvas { width: 100% !important; display: block; }
   <div class="nav-logo" onclick="showPage('home')">P( x )</div>
   <ul class="nav-links">
     <li><a id="nav-home"    onclick="showPage('home')">Home</a></li>
+    <li><a id="nav-slides"  onclick="showPage('slides')">Slides</a></li>
     <li><a id="nav-venn"    onclick="showPage('venn')">Venn Diagram</a></li>
     <li><a id="nav-bayes"   onclick="showPage('bayes')">Bayes' Theorem</a></li>
     <li><a id="nav-lln"     onclick="showPage('lln')">Law of Large Numbers</a></li>
@@ -254,9 +281,17 @@ canvas { width: 100% !important; display: block; }
     <div class="orb orb-2"></div>
     <div class="hero-tag">ANN COURSE PROJECT — PROBABILITY CONCEPTS</div>
     <h1>Probability<br><span>Visualized.</span></h1>
-    <p class="hero-sub">Four interactive demos to build an intuitive understanding of core probability concepts that form the mathematical foundation of Artificial Neural Networks.</p>
+    <p class="hero-sub">A full slide deck and four interactive demos to build an intuitive understanding of core probability concepts that form the mathematical foundation of Artificial Neural Networks.</p>
   </section>
   <div class="cards">
+    <div class="home-card" onclick="showPage('slides')">
+      <div class="card-num">SLIDES</div>
+      <div class="card-icon">🗂️</div>
+      <h2>Presentation — 21 Slides</h2>
+      <p>Browse the full slide deck covering all 7 sections — from axioms and distributions to MLE and cross-entropy loss — with thumbnail navigation and keyboard shortcuts.</p>
+      <div class="ann-tag">Covers: Foundations · Rules · Bayes · Distributions · MLE & ANN Applications</div>
+      <span class="card-arrow">→</span>
+    </div>
     <div class="home-card" onclick="showPage('venn')">
       <div class="card-num">DEMO 01</div>
       <div class="card-icon">⭕</div>
@@ -644,6 +679,7 @@ function showPage(name) {
     if (name === 'bayes')   { bayesLoadScenario('medical'); }
     if (name === 'lln')     { /* LLN auto-inits via llnReset state */ }
     if (name === 'softmax') { smLoadScenario('image'); }
+    if (name === 'slides')  { slidesLoad(); }
   }
   if (name === 'lln') {
     // redraw chart in case container size changed
@@ -1097,7 +1133,150 @@ function smUpdate() {
   document.getElementById('sm-comp-note').innerHTML=`For the top class (${s.classes[maxIdx]}): Softmax assigns <span class="highlight">${(probs[maxIdx]*100).toFixed(1)}%</span> vs simple normalization's ${(simpleProbs[maxIdx]*100).toFixed(1)}%. The exp() function amplifies the gap between scores, making the winning class stand out more — which produces sharper gradients during training.`;
 }
 
-/* ─── Boot ──────────────────────────────────────────── */
+<!-- ══════════════════════════════════════════════════════
+     SLIDES PAGE
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="page-slides">
+<div class="page-main">
+  <div class="page-tag">PRESENTATION — 21 SLIDES · 7 SECTIONS</div>
+  <h1>Probability Concepts</h1>
+  <p class="subtitle">Main Concepts of Probability used in the ANN course — from axioms and distributions to MLE and cross-entropy loss.</p>
+
+  <div class="slides-progress-track">
+    <div class="slides-progress-fill" id="slides-progress-fill" style="width:0%"></div>
+  </div>
+
+  <div class="slides-viewer-wrap">
+    <div class="slides-canvas-container">
+      <canvas id="slide-canvas"></canvas>
+      <div class="slides-loading-overlay" id="slides-loading-overlay">
+        <div class="slides-spinner"></div>
+        <div class="slides-loading-text">Loading slides...</div>
+      </div>
+    </div>
+    <div class="slides-nav-bar">
+      <button class="slides-btn" id="slides-btn-prev" onclick="slidesChangePage(-1)" disabled>← Prev</button>
+      <div class="slides-counter">Slide <span id="slides-cur-page">1</span> of <span id="slides-total-pages">—</span></div>
+      <button class="slides-btn" id="slides-btn-next" onclick="slidesChangePage(1)">Next →</button>
+      <button class="slides-btn" onclick="slidesToggleFullscreen()" title="Fullscreen">⛶</button>
+    </div>
+  </div>
+
+  <div class="slides-section-label" id="slides-section-label"></div>
+  <div class="slides-keyboard-hint">← → arrow keys to navigate (when on this page)</div>
+
+  <div class="slides-thumb-title">ALL SLIDES</div>
+  <div class="slides-thumbs" id="slides-thumbs-container"></div>
+</div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   SLIDES PAGE JS
+════════════════════════════════════════════════════════ */
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const SLIDES_PDF_URL = 'Probability_ANN_Course.pdf';
+const slidesSectionLabels = {
+  1:'Cover', 2:'Outline',
+  3:'Section 01 — Foundations', 4:'Section 01 — What is Probability?', 5:'Section 01 — Sample Space & Events',
+  6:'Section 02 — Probability Rules', 7:'Section 02 — Core Rules',
+  8:'Section 03 — Conditional Probability & Bayes', 9:'Section 03 — Conditional Probability P(A|B)', 10:"Section 03 — Bayes' Theorem",
+  11:'Section 04 — Random Variables & Distributions', 12:'Section 04 — Random Variables', 13:'Section 04 — Key Distributions in ANN',
+  14:'Section 05 — Expectation & Variance', 15:'Section 05 — Expected Value & Variance',
+  16:'Section 06 — Joint & Marginal Distributions', 17:'Section 06 — Joint, Marginal & Conditional',
+  18:'Section 07 — MLE & ANN Applications', 19:'Section 07 — Maximum Likelihood Estimation',
+  20:'Key Takeaways', 21:'Thank You'
+};
+
+let slidesPdfDoc = null, slidesCurrentPage = 1, slidesTotalPages = 0, slidesRendering = false;
+let slidesLoaded = false;
+
+async function slidesLoad() {
+  if (slidesLoaded) return;
+  slidesLoaded = true;
+  try {
+    slidesPdfDoc = await pdfjsLib.getDocument(SLIDES_PDF_URL).promise;
+    slidesTotalPages = slidesPdfDoc.numPages;
+    document.getElementById('slides-total-pages').textContent = slidesTotalPages;
+    document.getElementById('slides-loading-overlay').style.display = 'none';
+    slidesRenderPage(1);
+    slidesBuildThumbnails();
+  } catch(e) {
+    document.getElementById('slides-loading-overlay').innerHTML =
+      '<div style="color:var(--pink);font-size:0.78rem;text-align:center;padding:2rem;">Could not load PDF.<br>Make sure Probability_ANN_Course.pdf is in the same folder.</div>';
+  }
+}
+
+async function slidesRenderPage(num) {
+  if (slidesRendering || !slidesPdfDoc) return;
+  slidesRendering = true;
+  const page = await slidesPdfDoc.getPage(num);
+  const canvas = document.getElementById('slide-canvas');
+  const ctx = canvas.getContext('2d');
+  const containerWidth = canvas.parentElement.clientWidth;
+  const viewport = page.getViewport({ scale: 1 });
+  const scale = containerWidth / viewport.width;
+  const scaledVP = page.getViewport({ scale });
+  canvas.width = scaledVP.width; canvas.height = scaledVP.height;
+  await page.render({ canvasContext: ctx, viewport: scaledVP }).promise;
+  slidesCurrentPage = num;
+  document.getElementById('slides-cur-page').textContent = num;
+  document.getElementById('slides-btn-prev').disabled = num <= 1;
+  document.getElementById('slides-btn-next').disabled = num >= slidesTotalPages;
+  document.getElementById('slides-progress-fill').style.width = (num / slidesTotalPages * 100) + '%';
+  document.getElementById('slides-section-label').textContent = slidesSectionLabels[num] || '';
+  document.querySelectorAll('.slides-thumb').forEach((t, i) => t.classList.toggle('active', i + 1 === num));
+  slidesRendering = false;
+}
+
+async function slidesBuildThumbnails() {
+  const container = document.getElementById('slides-thumbs-container');
+  for (let i = 1; i <= slidesTotalPages; i++) {
+    const wrap = document.createElement('div');
+    wrap.className = 'slides-thumb' + (i === 1 ? ' active' : '');
+    wrap.onclick = () => slidesRenderPage(i);
+    const canvas = document.createElement('canvas');
+    const numDiv = document.createElement('div');
+    numDiv.className = 'slides-thumb-num';
+    numDiv.textContent = i;
+    wrap.appendChild(canvas); wrap.appendChild(numDiv);
+    container.appendChild(wrap);
+    const page = await slidesPdfDoc.getPage(i);
+    const vp = page.getViewport({ scale: 0.18 });
+    canvas.width = vp.width; canvas.height = vp.height;
+    page.render({ canvasContext: canvas.getContext('2d'), viewport: vp });
+  }
+}
+
+function slidesChangePage(delta) {
+  const next = slidesCurrentPage + delta;
+  if (next >= 1 && next <= slidesTotalPages) slidesRenderPage(next);
+}
+
+function slidesToggleFullscreen() {
+  const el = document.querySelector('.slides-viewer-wrap');
+  if (!document.fullscreenElement) el.requestFullscreen();
+  else document.exitFullscreen();
+}
+
+let slidesResizeTimer;
+window.addEventListener('resize', () => {
+  if (document.getElementById('page-slides').classList.contains('active')) {
+    clearTimeout(slidesResizeTimer);
+    slidesResizeTimer = setTimeout(() => slidesRenderPage(slidesCurrentPage), 200);
+  }
+});
+</script>
+
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('page-slides').classList.contains('active')) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') slidesChangePage(1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   slidesChangePage(-1);
+  if (e.key === 'f' || e.key === 'F') slidesToggleFullscreen();
+});
+
 showPage('home');
 </script>
 </body>
